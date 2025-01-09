@@ -12,7 +12,7 @@ const CaptchaApp = () => {
     const loadScript = () => {
       const script = document.createElement("script");
       script.src =
-        "https://b82b1763d1c3.eu-west-3.captcha-sdk.awswaf.com/b82b1763d1c3/jsapi.js";
+        "https://09bd26e5e726.eu-west-3.captcha-sdk.awswaf.com/09bd26e5e726/jsapi.js";
       script.type = "text/javascript";
       script.defer = true;
       script.onload = () => setScriptLoaded(true);
