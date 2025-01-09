@@ -7,6 +7,7 @@ const CaptchaApp = () => {
   const [sequence, setSequence] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [captchaResolved, setCaptchaResolved] = useState(false);
+  const [captchaTriggered, setCaptchaTriggered] = useState(false); // Ajouter un état pour savoir si le captcha a été déclenché
 
   useEffect(() => {
     const loadScript = () => {
@@ -36,7 +37,8 @@ const CaptchaApp = () => {
         window.AwsWafCaptcha.renderCaptcha(container, {
           apiKey: process.env.NEXT_PUBLIC_WAF_API_KEY,
           onSuccess: (wafToken) => {
-            setCaptchaResolved(true);
+            setCaptchaResolved(true); // Marquer le CAPTCHA comme résolu
+            setCaptchaTriggered(false); // Réinitialiser l'état après avoir résolu le CAPTCHA
           },
           onError: (error) => {
             console.error("Captcha Error:", error);
@@ -57,18 +59,29 @@ const CaptchaApp = () => {
     setIsLoading(true);
 
     for (let i = 1; i <= N; i++) {
-      if (!captchaResolved) {
-        window.showMyCaptcha && window.showMyCaptcha();
-        break;
-      }
+      // Si le CAPTCHA n'est pas encore résolu et qu'une erreur Forbidden est rencontrée
       try {
-        await fetch("https://api.prod.jcloudify.com/whoami");
-        setSequence((prev) => [...prev, `${i}. Forbidden`]);
+        const response = await fetch("https://api.prod.jcloudify.com/whoami");
+
+        if (response.status === 403) {
+          setSequence((prev) => [...prev, `${i}. Forbidden`]);
+
+          if (!captchaTriggered) {
+            // Déclencher le CAPTCHA une seule fois
+            window.showMyCaptcha && window.showMyCaptcha();
+            setCaptchaTriggered(true); // Marquer que le CAPTCHA a été déclenché
+          }
+        } else {
+          setSequence((prev) => [...prev, `${i}. Success`]);
+        }
       } catch (error) {
         console.error(`Error on request ${i}:`, error);
+        setSequence((prev) => [...prev, `${i}. Error`]);
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Délai entre les tentatives
     }
+
     setIsLoading(false);
   };
 
