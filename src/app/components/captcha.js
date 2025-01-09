@@ -73,29 +73,78 @@ const CaptchaApp = () => {
   };
 
   return (
-    <div>
-      <h1>Captcha-Enabled Sequence App</h1>
-      {sequence.length === 0 && !isLoading && (
-        <form onSubmit={handleSubmit}>
-          <label>
-            Enter a number (1-1000): 
-            <input
-              type="number"
-              value={inputValue}
-              onChange={(e) => setInputValue(e.target.value)}
-            />
-          </label>
-          <button type="submit">Submit</button>
-        </form>
-      )}
-      {sequence.length > 0 && (
-        <div>
-          {sequence.map((line, index) => (
-            <p key={index}>{line}</p>
-          ))}
-        </div>
-      )}
-      <div id="my-captcha-container" />
+    <div style={{ fontFamily: "Arial, sans-serif", margin: "20px" }}>
+      <h1 style={{ textAlign: "center", color: "#008000" }}>
+        CAPTCHA IMPLEMENT
+      </h1>
+      <div
+        style={{
+          maxWidth: "600px",
+          margin: "0 auto",
+          padding: "20px",
+          border: "1px solid #ccc",
+          borderRadius: "8px",
+          backgroundColor: "#f9f9f9",
+        }}
+      >
+        {sequence.length === 0 && !isLoading && (
+          <form onSubmit={handleSubmit}>
+            <label style={{ display: "block", marginBottom: "10px" }}>
+              Enter a number (1-1000):
+              <input
+                type="number"
+                value={inputValue}
+                onChange={(e) => setInputValue(e.target.value)}
+                style={{
+                  display: "block",
+                  width: "100%",
+                  padding: "10px",
+                  margin: "10px 0",
+                  borderRadius: "4px",
+                  border: "1px solid #ccc",
+                }}
+              />
+            </label>
+            <button
+              type="submit"
+              style={{
+                backgroundColor: "#4CAF50",
+                color: "white",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "4px",
+                cursor: "pointer",
+                fontSize: "16px",
+              }}
+            >
+              Submit
+            </button>
+          </form>
+        )}
+        {isLoading && <p style={{ textAlign: "center" }}>Loading...</p>}
+        {sequence.length > 0 && (
+          <div style={{ marginTop: "20px" }}>
+            {sequence.map((line, index) => (
+              <p
+                key={index}
+                style={{
+                  padding: "5px 0",
+                  borderBottom: "1px solid #ddd",
+                }}
+              >
+                {line}
+              </p>
+            ))}
+          </div>
+        )}
+        <div
+          id="my-captcha-container"
+          style={{
+            marginTop: "20px",
+            textAlign: "center",
+          }}
+        />
+      </div>
     </div>
   );
 };
